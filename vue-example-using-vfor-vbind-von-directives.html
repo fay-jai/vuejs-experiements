@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>VueJS</title>
+        <style>
+            .completed {
+                text-decoration: line-through;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <ul>
+                <li
+                    v-for="task in tasks"
+                    v-bind:class="{ 'completed': task.completed }"
+                    v-on:click="toggleCompletedFor(task)">
+                    {{ task.body }}
+                </li>
+            </ul>
+        </div>
+
+        <script src="./vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+
+                data: {
+                    tasks: [
+                        { "body": "Go to gym", "completed": false },
+                        { "body": "Volunteer at Saratoga Library", "completed": true },
+                        { "body": "Cook dinner", "completed": true }
+                    ]
+                },
+
+                methods: {
+                    toggleCompletedFor: function(task) {
+                        task.completed = !task.completed;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
