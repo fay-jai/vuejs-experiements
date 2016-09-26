@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Computed properties in VueJS</title>
+    </head>
+    <body>
+        <div id="app">
+            <!--
+                Example of creating a computed property that's
+                automatically reactive
+                (i.e. when points is changed, the function
+                associated with skill will be re-fun)
+            -->
+            <input type="text" v-model="points" />
+            <h1>Skill: {{ skill }}</h1>
+            <h1>Player Type: {{ type }}</h1>
+        </div>
+
+        <script src="./vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+
+                data: {
+                    points: 100,
+                    type: "Expert"
+                },
+
+                computed: {
+                    skill: function() {
+                        if (this.points < 100) {
+                            return "Beginner";
+                        } else if (this.points < 200) {
+                            return "Intermediate";
+                        } else {
+                            return "Advanced";
+                        }
+                    }
+                },
+
+                /*
+                 * Although not preferred, it's possible to set
+                 * up a watcher on the different data properties
+                 * so that whenever it's value changes, it executes
+                 * the function associated with the watch.
+                 */
+                watch: {
+                    points: function() {
+                        this.type = this.points <= 0 ? "Noob" : "Expert";
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
