@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Two way data binding Vue</title>
+    </head>
+    <body>
+        <!--
+        Notes:
+
+        1) We're creating a new Vue instance and defining
+        a "data" property for this particular instance.
+
+        2) The template has access to the properties defined
+        within the "data" property. In this example, the
+        "message" property can be accessed directly in the
+        template.
+
+        3) The v-model directive binds the input's value to the
+        "message" property. This means that whenever the input's
+        value changes, the Vue instance's "message" property is
+        also changed.
+
+        4) The Vue instance has a $data property that allows you
+        to see all the values of the "data" property.
+        -->
+
+        <div id="app">
+            <h1>{{ message }}</h1> 
+            <input v-model="message" />
+            <pre>
+                {{ $data }}
+            </pre>
+        </div>
+
+        <script src="./vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+                data: {
+                    message: "Hello World"
+                }
+            });
+        </script>
+    </body>
+</html>
