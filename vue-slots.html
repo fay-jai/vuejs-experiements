@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Slots in Vue</title>
+    </head>
+    <body>
+        <div id="app">
+            <my-parent>
+                <p slot="footer">Leveraging slots!</p>
+                <p slot="header">Multiple DOM elements can appear inside</p>
+            </my-parent>
+            <my-parent></my-parent>
+        </div>
+
+        <template id="my-parent-template">
+            <div class="my-parent-container">
+                <p>Within the Parent</p>
+                <div class="header-content">
+                    <slot name="header"></slot>
+                </div>
+                <slot>
+                    <p>Fallback content here</p>
+                </slot>
+                <div class="footer-content">
+                    <slot name="footer"></slot>
+                </div>
+            </div>
+        </template>
+
+        <script src="./vue.js"></script>
+        <script>
+            var MyParent = {
+                template: "#my-parent-template"
+            };
+
+            new Vue({
+                el: "#app",
+
+                components: {
+                    "my-parent": MyParent
+                }
+            });
+        </script>
+    </body>
+</html>
