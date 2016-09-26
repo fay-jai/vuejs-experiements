@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>v-for directive</title>
+    </head>
+    <body>
+        <div id="app">
+            <!--
+                Use v-for directive to repeat / render a list of items.
+                The reason we also need to bind the "plan" property is because
+                this is the only way to ensure that the "plan" object is passed
+                down to the component (or else it'd just be a "plan" string).
+
+                Also note that if you have a multi-word prop name in the template,
+                it must be hyphenated. But the corresponding prop name in JS will be
+                camel-cased.
+
+                Another interesting point is that the DOM element with the
+                v-for attribute on it will be what's repeated and NOT just
+                the content within that DOM element. In the example below,
+                this means that the entire "div" itself is repeated multiple
+                times within the "#app" element (and not just the "plan"
+                component).
+            -->
+            <div v-for="plan in plans">
+                <plan :plan-prop="plan"></plan>
+            </div>
+        </div>
+
+        <template id="plan-template">
+            <div>
+                <span>{{ planProp.name }}: </span>
+                <span>{{ planProp.price }} / month</span>
+            </div>
+        </template>
+
+        <script src="./vue.js"></script>
+        <script>
+            var Plan = {
+                template: "#plan-template",
+
+                props: [ "planProp" ]
+            };
+
+            new Vue({
+                el: "#app",
+
+                data: {
+                    plans: [
+                        { name: "Enterprise", price: 100 },
+                        { name: "Pro", price: 50 },
+                        { name: "Personal", price: 10 },
+                        { name: "Free", price: 0 }
+                    ]
+                },
+
+                components: {
+                    plan: Plan
+                }
+            });
+        </script>
+    </body>
+</html>
