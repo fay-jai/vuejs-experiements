@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Parent Child Communication</title>
+    </head>
+    <body>
+        <div id="app">
+            <my-grand-parent
+                @d-event="atTheTopEcho"
+                @e-event="anotherAtTheTopEcho">
+            </my-grand-parent>
+        </div>
+
+        <template id="my-grand-parent-template">
+            <div class="my-grand-parent-container">
+                <my-parent
+                    @a-event="echoGrandParent"
+                    @c-event="echoSecondEvent">
+                </my-parent>
+                <my-parent></my-parent>
+            </div>
+        </template>
+
+        <template id="my-parent-template">
+            <div class="my-parent-container">
+                <p>Hello from Parent: {{ message }}</p>
+
+                <my-child
+                    @a-event="echoParent"
+                    @b-event="echoMultipleEvents">
+                </my-child>
+
+                <my-child @a-event="echoFakeParent"></my-child>
+            </div>
+        </template>
+
+        <template id="my-child-template">
+            <div class="my-child-container">
+                <p>Hello from Child</p>
+                <button @click.prevent="emitChildEvent">Click Me</button>
+            </div>
+        </template>
+
+        <script src="./vue.js"></script>
+        <script>
+            /*
+             * Learnings from experiment:
+             *
+             * 1) Custom event names can not be camelCased. In my example,
+             * if I named my custom event "aEvent" and bound my components
+             * to listen for "aEvent", there would be no response. If
+             * custom events are multiple words, use a hyphen to separate each
+             * word.
+             *
+             * 2) When a child component emits a custom event, the part of the
+             * parent component template that listens for the custom event must
+             * be the child component. For example, when "my-child" emits the
+             * "a-event", you must bind the "a-event" listener on the
+             * "my-child" component within the "my-parent" component template.
+             *
+             * 3) When a child component emits a custom event, only the immediate
+             * parent component can listen for the event. In other words, the
+             * custom event does NOT automatically propagate up. In my example,
+             * in order for "my-grand-parent" to hear the "a-event", the
+             * "my-parent" component had to emit the "a-event" as well.
+             *
+             * 4) A child component can emit multiple custom events and a
+             * parent component can listen to multiple custom events. Each
+             * custom event requires a different listener on the parent
+             * component.
+             *
+             * 5) There seems to be a sequential order in which custom events
+             * are propagated from child to parent. In my example, the
+             * "my-child" component is configured to emit "a-event" first and
+             * then emit "b-event". Because "a-event" is emitted
+             * first, it's entire chain of event propagation happens first before
+             * the entire chain of event propagation for "b-event".
+             * Concretely, this means that "my-child" emits "a-event" first,
+             * then "my-parent" emits "a-event", then "my-grand-parent" emits
+             * "d-event" BEFORE "b-event" is emitted from the
+             * "my-child" component. If instead we reversed the order in which
+             * "my-child" emits "a-event" and "b-event", the
+             * order of event propagation is reversed! In fact, events are
+             * emitted in a depth first approach: child emits 1st event, parent
+             * emits first event, grand-parent responds to first event, then
+             * parent emits second event, grand-parent responds to second event,
+             * and then once parent has exhausted emitting all its events,
+             * the child will emit its second event as well as the rest of its
+             * event propagation.
+             *
+             */
+            var MyChild = {
+                template: "#my-child-template",
+
+                methods: {
+                    emitChildEvent: function(e) {
+                        console.log("==> Child");
+
+                        this.$emit("a-event", "a");
+                        this.$emit("b-event", "b");
+                    }
+                }
+            };
+
+            var MyParent = {
+                template: "#my-parent-template",
+
+                data: function() {
+                    return {
+                        message: "Initial message"
+                    };
+                },
+
+                methods: {
+                    echoParent: function(payload) {
+                        console.log("==> Parent heard: ", payload);
+
+                        this.message = payload;
+
+                        this.$emit("a-event", "a");
+                        this.$emit("c-event", "c");
+                    },
+
+                    echoFakeParent: function() {
+                        console.log("fake");
+                    },
+
+                    echoMultipleEvents: function() {
+                        console.log("Components can listen for multiple events");
+                    }
+                },
+
+                components: {
+                    "my-child": MyChild
+                }
+            };
+
+            var MyGrandParent = {
+                template: "#my-grand-parent-template",
+
+                methods: {
+                    echoGrandParent: function(payload) {
+                        console.log("==> Grand Parent heard: ", payload);
+
+                        this.$emit("d-event", "d");
+                    },
+
+                    echoSecondEvent: function(payload) {
+                        console.log("==> Grand Parent heard: ", payload);
+
+                        this.$emit("e-event", "e");
+                    }
+                },
+
+                components: {
+                    "my-parent": MyParent
+                }
+            };
+
+            new Vue({
+                el: "#app",
+
+                methods: {
+                    atTheTopEcho: function(payload) {
+                        console.log("At the top, heard: ", payload);
+                    },
+
+                    anotherAtTheTopEcho: function(payload) {
+                        console.log("At the top, also heard: ", payload);
+                    }
+                },
+
+                components: {
+                    "my-grand-parent": MyGrandParent
+                }
+            });
+        </script>
+    </body>
+</html>
