@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>v-on directive</title>
+    </head>
+    <body>
+        <div id="app">
+            <!--
+                The .prevent modifier allows the event object
+                that's passed to the handleIt method to have
+                "e.preventDefault()" called by default.
+            -->
+            <form action="done.html" v-on:submit.prevent="handleIt">
+                <button type="submit">
+                    Prevented - Submit Me!
+                </button>
+            </form>
+
+            <!--
+                The @ symbol is short-hand for v-on :)
+            -->
+            <form action="done.html" @submit.prevent="handleIt">
+                <button type="submit">
+                    Shorthand - Submit Me!
+                </button>
+            </form>
+
+            <form action="done.html" v-on:submit="handleIt">
+                <button type="submit">
+                    Not Prevented - Submit Me!
+                </button>
+            </form>
+
+        </div>
+
+        <div id="counter">
+            <button @click="incrementCount">
+                Increment Counter
+            </button>
+            <span>{{ counter }}</span>
+        </div>
+
+        <script src="./vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+                methods: {
+                    handleIt: function(e) {
+                        console.log(e.target);
+                    }
+                }
+            });
+
+            new Vue({
+                el: "#counter",
+                data: {
+                    counter: 0
+                },
+                methods: {
+                    incrementCount: function() {
+                        /*
+                         * Vue automatically binds each
+                         * data property onto the ViewModel
+                         * instance so that it can be
+                         * referenced via 'this'
+                         */
+                        this.counter++;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
