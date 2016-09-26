@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>One way data flow in VueJS</title>
+    </head>
+    <body>
+        <div id="app">
+            <parent></parent>
+        </div>
+
+        <template id="parent-template">
+            <div class="parent-container">
+                <div>Parent</div>
+                <input v-model="message">
+                <child :message-prop="message"></child>
+                <child></child>
+            </div>
+        </template>
+
+        <template id="child-template">
+            <div class="child-container">
+                <div>Child: {{ messageProp }}</div>
+                <div>Transformed: {{ transformedMessage }}</div>
+            </div>
+        </template>
+
+        <script src="./vue.js"></script>
+        <script>
+            var Child = {
+                template: "#child-template",
+
+                props: {
+                    messageProp: {
+                        type: String,
+                        default: "default value"
+                    }
+                },
+
+                computed: {
+                    transformedMessage: function() {
+                        return this.messageProp.toUpperCase();
+                    }
+                }
+            };
+
+            var Parent = {
+                template: "#parent-template",
+
+                data: function() {
+                    return {
+                        message: ""
+                    };
+                },
+
+                components: {
+                    child: Child
+                }
+            };
+
+            new Vue({
+                el: "#app",
+
+                components: {
+                    parent: Parent
+                }
+            });
+        </script>
+    </body>
+</html>
