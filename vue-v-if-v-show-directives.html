@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>v-if and v-show directives</title>
+    </head>
+    <body>
+        <div id="app">
+            <!--
+                The difference between v-show and v-if is that
+                v-show simply places a display: none on the style
+                for the element (i.e. the element is still in the
+                DOM), whereas v-if actually removes the element
+                from the DOM.
+            -->
+            <form>
+                <span class="error" v-show="!message">
+                    You must enter a message
+                </span>
+
+                <textarea v-model="message"></textarea>
+
+                <button type="submit" v-if="message">
+                    Send Message
+                </button>
+            </form>
+
+            <pre>
+                {{ $data }}
+            </pre>
+        </div>
+
+        <script src="./vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+                data: {
+                    message: ""
+                }
+            });
+        </script>
+    </body>
+</html>
