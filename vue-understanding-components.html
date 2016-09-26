@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Components in VueJS</title>
+    </head>
+    <body>
+        
+        <div id="app">
+            <!--
+                In order to pass the 'someText' data property
+                down to the 'counter' component, we have to do
+                2 things:
+                
+                1) define the counter component to accept a
+                "heading" prop
+                
+                2) bind the prop with the value associated with
+                the "someText" property. If you don't bind it,
+                then the 'counter' component will assume
+                that you're passing the string value "someText"
+                down to the "heading" prop.
+
+                Example that doesn't work:
+
+                <counter heading="someText"></counter>
+
+                This would result in the counter component with
+                a props value as the string 'someText' and not the
+                interpreted value of 'Counter'.
+            -->
+            <counter v-bind:heading="someText"></counter>
+            <counter :heading="someText"></counter>
+        </div>
+        
+        <!--
+            Instead of inlining a string template for the
+            "template" property in a Component, define
+            a template here with an id so that it can be
+            referenced.
+        -->
+        <template id="counter-template">
+            <div>
+                <h1>{{ heading }}</h1>
+                <button @click="increment">
+                    Increment: {{ count }}
+                </button>
+            </div>
+        </template>
+
+        <script src="./vue.js"></script>
+
+        <script>
+            /*
+             * This defines a GLOBAL component, meaning that its
+             * available anywhere within the root Vue instance.
+             * 
+             * See below for how to make this 'counter' component
+             * local to a particular instance.
+             */
+            Vue.component("counter", {
+                template: "#counter-template",
+
+                /*
+                 * Props must be defined in order for values
+                 * to be passed into the component instance
+                 * from a parent component.
+                 */
+                props: [
+                    "heading"
+                ],
+
+                /*
+                 * You can't just have a data property that
+                 * references an object because then ALL
+                 * component instances will share the
+                 * SAME data.
+                 */
+                data: function() {
+                    return {
+                        count: 0
+                    };
+                },
+
+                /*
+                 * Since all instances of the component can share
+                 * the same methods, the methods property can
+                 * simply be an object. References to 'this' within
+                 * methods will refer to the specific component
+                 * instance.
+                 */
+                methods: {
+                    increment: function() {
+                        this.count += 1;
+                    }
+                }
+            });
+
+            new Vue({
+                el: "#app",
+                
+                /*
+                 * This is an example of passing data from a
+                 * parent component down to its children.
+                 * The 'someText' value is available in #app
+                 * and passed down to each of the
+                 * 'counter' component instances.
+                 */
+                data: {
+                    someText: "Counter"
+                }
+            });
+        </script>
+       
+        <!--
+        <script>
+            /*
+             * To make the 'counter' component locally available:
+             */ 
+            new Vue({
+                el: "#app",
+                data: {
+                    someText: "Counter"
+                },
+                components: {
+
+                    counter: {
+                        template: "#counter-template",
+                        props: [
+                            "heading"
+                        ],
+                        data: function() {
+                            return {
+                                count: 0
+                            };
+                        },
+                        methods: {
+                            increment: function() {
+                                this.count += 1;
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+        -->
+    </body>
+</html>
