@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Dynamic components in Vue</title>
+    </head>
+    <body>
+        <!--
+        The main point to note here is that there is a reserved <component> element
+        which can be combined with the "is" attribute to determine which of the
+        registered components to display.
+        -->
+
+        <div id="app">
+            <component is="home"></component>
+            <component is="admin"></component>
+        </div>
+
+        <template id="home-template">
+            <div>Welcome to the Home page</div>
+        </template>
+
+        <template id="admin-template">
+            <div>Welcome to the Admin page</div>
+        </template>
+
+        <script src="./vue.js"></script>
+        <script>
+            var Home = {
+                template: "#home-template"
+            };
+
+            var Admin = {
+                template: "#admin-template"
+            };
+
+            new Vue({
+                el: "#app",
+
+                components: {
+                    home: Home,
+                    admin: Admin
+                }
+            });
+        </script>
+    </body>
+</html>
